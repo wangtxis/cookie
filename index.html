@@ -2,42 +2,148 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>下载远程软件</title>
+    <title>软件兑换下载</title>
     <style>
         .container {
-            
            font-size: 18px;
            color: red;
             margin: 10px;
             background-color: #f0f0f0;
             padding: 2% 5%;
-            border-radius: 10px
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 20px auto; /* 页面居中 */
         }
 
         ul {
             padding-left: 20px;
         }
 
-            ul li {
-                line-height: 2.3
-            }
+        ul li {
+            line-height: 2.3
+        }
 
-        
+        /* 兑换码输入框样式 */
+        .code-input {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #code {
+            padding: 8px 10px;
+            font-size: 16px;
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #submitBtn {
+            padding: 8px 20px;
+            font-size: 16px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #submitBtn:hover {
+            background-color: #cc0000;
+        }
+
+        /* 下载区域默认隐藏 */
+        #downloadArea {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .error-tip {
+            color: #ff0000;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1> 点击下面链接下载PS软件：</h1>
-        <ul>
-            
-            
-            <li><a href=www.baidu.com 《PS下载地址及安装教程》
-   >点我不限速下载PS软件　</a></li>
-             
-            
-          
-            
-        </ul>
+        <h1>软件兑换下载中心</h1>
+        <!-- 兑换码输入区域 -->
+        <div class="code-input">
+            <input type="text" id="code" placeholder="请输入您的兑换码（比如PS666、PR999）">
+            <button id="submitBtn">立即兑换</button>
+        </div>
+        <div class="error-tip" id="errorTip">兑换码错误，请核对后重新输入！</div>
+
+        <!-- 下载区域（默认隐藏） -->
+        <div id="downloadArea">
+            <h2 id="softwareTitle"></h2>
+            <ul>
+                <li><a id="downloadLink" href="">点我不限速下载软件</a ></li>
+            </ul>
+        </div>
     </div>
+
+    <script>
+        // 核心配置：兑换码 -> 对应软件信息（你可以随便改码、加新软件）
+        const codeConfig = {
+            // PS兑换码（可自定义，比如PS666、PS888都指向PS）
+            'PS666': {
+                title: 'PS软件下载',
+                linkText: '《PS下载地址及安装教程》点我不限速下载PS软件',
+                linkUrl: 'https://www.feishu.cn/xxx' // 替换成PS的真实下载链接（飞书/语雀）
+            },
+            // PR兑换码
+            'PR999': {
+                title: 'PR软件下载',
+                linkText: '《PR下载地址及安装教程》点我不限速下载PR软件',
+                linkUrl: 'https://www.feishu.cn/yyy' // 替换成PR的真实下载链接
+            },
+            // AE兑换码
+            'AE888': {
+                title: 'AE软件下载',
+                linkText: '《AE下载地址及安装教程》点我不限速下载AE软件',
+                linkUrl: 'https://www.feishu.cn/zzz' // 替换成AE的真实下载链接
+            }
+            // 新增软件只需加一行：'新码': {title: '', linkText: '', linkUrl: ''}
+        };
+
+        // 获取页面元素
+        const codeInput = document.getElementById('code');
+        const submitBtn = document.getElementById('submitBtn');
+        const errorTip = document.getElementById('errorTip');
+        const downloadArea = document.getElementById('downloadArea');
+        const softwareTitle = document.getElementById('softwareTitle');
+        const downloadLink = document.getElementById('downloadLink');
+
+        // 点击“立即兑换”按钮的逻辑
+        submitBtn.addEventListener('click', function() {
+            // 去除输入码的空格（防止用户输错）
+            const inputCode = codeInput.value.trim().toUpperCase(); // 不区分大小写（比如ps666也能识别）
+            // 检查兑换码是否存在
+            if (codeConfig[inputCode]) {
+                // 隐藏错误提示，显示下载区域
+                errorTip.style.display = 'none';
+                downloadArea.style.display = 'block';
+                // 填充对应软件信息
+                const config = codeConfig[inputCode];
+                softwareTitle.innerText = config.title;
+                downloadLink.innerText = config.linkText;
+                downloadLink.href = config.linkUrl;
+            } else {
+                // 兑换码错误：显示提示，隐藏下载区域
+                errorTip.style.display = 'block';
+                downloadArea.style.display = 'none';
+            }
+        });
+
+        // 按回车键也能兑换（优化体验）
+        codeInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+    </script>
 </body>
 </html>
